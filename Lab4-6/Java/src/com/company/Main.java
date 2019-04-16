@@ -17,12 +17,12 @@ public class Main {
         BankAccounts.add(new Account(3, "Marco Diaz", 'C'));
         BankAccounts.add(new Account(4, "Ertan Mutlu", 'C'));
 
-        Scanner sc = new Scanner(System.in);
         char input;
 
         do
         {
             WriteStartInfo();
+            Scanner sc = new Scanner(System.in);
             input = sc.next().charAt(0);
             input = Character.toUpperCase(input);
 
@@ -56,6 +56,8 @@ public class Main {
                     break;
             }
         } while (input != 'Q');
+
+        System.out.println("--------------------------------------\n");
     }
 
     private static void WriteStartInfo()
@@ -74,31 +76,30 @@ public class Main {
 
     private static void ListAllBankAccount()
     {
-        System.out.println("\nAll Bank Accounts;");
+        System.out.println("All Bank Accounts;\n");
 
         for (Account item : BankAccounts)
         {
             System.out.println(item.toString().replace("@", "\n"));
         }
-        System.out.println("--------------------------------------");
     }
 
     private static void AddBankAccount()
     {
-        Scanner sc = new Scanner(System.in);
         String readLineStr = "";
 
         int number = 0;
         String owner = "";
         char type = ' ';
 
-        System.out.println("\nAdd new bank account;");
+        System.out.println("Add new bank account;\n");
 
         try
         {
             do
             {
                 System.out.println("Enter Account Number:");
+                Scanner sc = new Scanner(System.in);
                 readLineStr = sc.nextLine();
                 readLineStr = readLineStr.trim();
 
@@ -108,9 +109,10 @@ public class Main {
                     System.out.println("Account Number not suitable!\n");
                 }
 
-                if (BankAccounts.stream().anyMatch((a) -> a.CheckNumber(number)))
+                final int accountNum = number;
+                if (BankAccounts.stream().anyMatch((a) -> a.CheckNumber(accountNum)))
                 {
-                    System.out.println("Account Number already taken!\n");
+                    System.out.println("Account number already taken!\n");
                     number = 0;
                 }
 
@@ -119,6 +121,7 @@ public class Main {
             do
             {
                 System.out.println("Enter Account Owner Name:");
+                Scanner sc = new Scanner(System.in);
                 readLineStr = sc.nextLine();
                 readLineStr = readLineStr.trim();
                 owner = readLineStr;
@@ -134,11 +137,12 @@ public class Main {
             {
 
                 System.out.println("Type(C OR S):");
+                Scanner sc = new Scanner(System.in);
                 type = sc.next().charAt(0);
                 type = Character.toUpperCase(type);
 
                 if (type != 'C' && type != 'S')
-                    System.out.println("\nAccount Type not suitable!");
+                    System.out.println("Account Type not suitable!\n");
 
             } while (type != 'C' && type != 'S');
 
@@ -147,22 +151,20 @@ public class Main {
         }
         catch (Exception ex)
         {
-            System.out.println("Operation failed!");
+            System.out.println("Operation failed!\n");
         }
 
-        System.out.println("--------------------------------------");
     }
 
     private static void EditBankAccount()
     {
-        Scanner sc = new Scanner(System.in);
         String readLineStr = "";
 
         int number = 0;
         String owner = "";
         char type = ' ';
 
-        System.out.println("\nEdit Bank Account;");
+        System.out.println("Edit Bank Account;");
         Account rec = GetAccount();
         if (rec != null)
         {
@@ -171,6 +173,7 @@ public class Main {
                 do
                 {
                     System.out.println("Owner Name:");
+                    Scanner sc = new Scanner(System.in);
                     readLineStr = sc.nextLine();
                     readLineStr = readLineStr.trim();
                     owner = readLineStr;
@@ -186,11 +189,12 @@ public class Main {
                 {
 
                     System.out.println("Type(C OR S):");
+                    Scanner sc = new Scanner(System.in);
                     type = sc.next().charAt(0);
                     type = Character.toUpperCase(type);
 
                     if (type != 'C' && type != 'S')
-                        System.out.println("\nAccount Type not suitable!");
+                        System.out.println("Account Type not suitable!\n");
 
                 } while (type != 'C' && type != 'S');
 
@@ -204,41 +208,128 @@ public class Main {
             }
             catch (Exception ex)
             {
-                System.out.println("Operation failed!");
+                System.out.println("Operation failed!\n");
             }
         }
-
-        System.out.println("--------------------------------------");
     }
 
     private static void RemoveBankAccount()
     {
+        System.out.println("Remove Bank Account;\n");
+
+        Account rec = GetAccount();
+        if (rec != null)
+        {
+            char answer = ' ';
+
+            do
+            {
+                System.out.println("Are you sure?(Y/N):");
+                Scanner sc = new Scanner(System.in);
+                answer = sc.next().charAt(0);
+                answer = Character.toUpperCase(answer);
+            } while (answer != 'Y' && answer != 'N');
+
+            if (answer == 'Y')
+            {
+                BankAccounts.remove(rec);
+                System.out.println("Account [" + rec.GetNumber() + "] deleted!\n");
+            }
+            else
+            {
+                System.out.println("Deletion process canceled!\n");
+            }
+        }
     }
 
     private static void SelectBankAccount()
     {
+        System.out.println("Get Bank Account Info;\n");
+        Account rec = GetAccount();
+        if (rec != null)
+        {
+            System.out.println(rec.toString().replace("@", "\n"));
+        }
     }
 
     private static void DepositToBankAccount()
     {
+        System.out.println("Deposit To Bank Account;\n");
+        Account rec = GetAccount();
+        if (rec != null)
+        {
+            double depositAmount = 0;
+
+            do
+            {
+                System.out.println("Deposit Amount:");
+                Scanner sc = new Scanner(System.in);
+                String amountStr = sc.nextLine();
+
+                if (tryParseInt(amountStr)) {
+                    depositAmount = Integer.parseInt(amountStr);
+                }else{
+                    System.out.println("Deposit amount not suitable!\n");
+                }
+
+            } while (depositAmount <= 0);
+
+            rec.ToDeposit(depositAmount);
+
+            System.out.println("Account new balance:["+rec.GetCurrentBalance()+"] \n");
+        }
     }
 
     private static void WithdrawFromBankAccount()
     {
+        System.out.println("Withdraw From Bank Account;\n");
+        Account rec = GetAccount();
+        if (rec != null)
+        {
+            double withdrawAmount = 0;
+
+            do
+            {
+                System.out.println("Withdraw Amount:");
+                Scanner sc = new Scanner(System.in);
+                String amountStr = sc.nextLine();
+
+                if (tryParseInt(amountStr)) {
+                    withdrawAmount = Integer.parseInt(amountStr);
+                }else{
+                    System.out.println("Withdraw amount not suitable!\n");
+                }
+
+            } while (withdrawAmount <= 0);
+
+            if ((rec.GetCurrentBalance() - withdrawAmount) >= 500)
+            {
+                rec.ToWithdraw(withdrawAmount);
+                System.out.println("Account new balance:["+rec.GetCurrentBalance()+"] \n");
+            }
+            else
+            {
+                System.out.println("No enough money on account. The balance can't be low than 500$\n");
+            }
+        }
     }
 
     private static void GetBalanceFromBankAccount()
     {
-
+        System.out.println("Get Bank Account Balance;\n");
+        Account rec = GetAccount();
+        if (rec != null)
+        {
+            System.out.println("Account Balance:["+rec.GetCurrentBalance()+"] \n");
+        }
     }
 
     private static Account GetAccount()
     {
-        Scanner sc = new Scanner(System.in);
-
         int number = 0;
 
-        System.out.println("\nAccount Number:");
+        System.out.println("Account Number:");
+        Scanner sc = new Scanner(System.in);
         String numberStr = sc.nextLine();
         numberStr = numberStr.trim();
 
@@ -246,21 +337,17 @@ public class Main {
             number = Integer.parseInt(numberStr);
         }else{
             System.out.println("Account Number not suitable!\n");
+            return null;
         }
 
+        final int accountNum = number;
         Optional<Account> recOp = BankAccounts.stream()
-                .filter(x -> x.GetNumber() == number)
+                .filter(x -> x.GetNumber() == accountNum)
                 .findFirst();
 
-        Account rec = null;
-
-        if(recOp.isPresent()) {
-            rec = recOp.get();
-        }
-
-        if (rec==null)
+        if (recOp!=null)
         {
-            return rec;
+            return recOp.get();
         }else{
             System.out.println("We coudn't find bank account! Please check bank account with List function.\n");
             return null;
