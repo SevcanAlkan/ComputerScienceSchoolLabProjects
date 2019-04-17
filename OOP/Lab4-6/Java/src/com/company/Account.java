@@ -44,7 +44,7 @@ public class Account {
         return this.Balance;
     }
 
-    @Override
+        @Override
     public String toString() {
         return String.format("@Account Number: " + this.Number + "@Owner: " + this.NameOfDepositor + "@Type: " + (this.Type == 'C' ? "Checking" : "Saving") + "@Balance: " + this.Balance + "@");
     }
