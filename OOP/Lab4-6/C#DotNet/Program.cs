@@ -57,7 +57,7 @@ namespace BankAccount
                             break;
                     }
                 }
-            } while (Console.ReadKey(true).Key != ConsoleKey.Escape);
+            } while (tmpSelection != 'M');
         }
 
         private static void WriteStartInfo()
